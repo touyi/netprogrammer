@@ -9,9 +9,14 @@
 
 #define COMMON_PORT 2020
 #define MAX_BUFFER 1024
-
+#include<sys/wait.h>
+#include <netinet/in.h>
+#include<string.h>
+#include <arpa/inet.h>
 #include "Tools.h"
 #include "Log.h"
+#include <netinet/in.h>
+#include <sys/unistd.h>
 #include<iostream>
 using std::cout;
 using std::endl;

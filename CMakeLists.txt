@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.0)
 project(colinprj)
 
 #set(CMAKE_CXX_STANDARD 14)
@@ -14,3 +14,4 @@ project(colinprj)
 #target_link_libraries (colinprj libunp.a)
 ADD_SUBDIRECTORY(client)
 ADD_SUBDIRECTORY(server)
+ADD_SUBDIRECTORY(Test)

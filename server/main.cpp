@@ -1,35 +1,48 @@
 #include <iostream>
 #include<sys/socket.h>
-#include "../lib/lib/unp.h"
+//#include "../lib/lib/unp.h"
 #include "../common/CommonDef.h"
+#include "Process.h"
+#include "../common/Mepoll.h"
+
+#define POLLSIZE 10
+void child_ctl(int signo){
+    int stat = 0;
+    int pid = 0;
+    while((pid = waitpid(-1, &stat, WNOHANG))>0){
+        cout << "Child terminal pid:" << pid << endl;
+    }
+    return;
+}
 
 int main() {
-    int listenfd, connefd;
-    sockaddr_in serveraddr;
-    char buffer[MAX_BUFFER + 1];
-    listenfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    bzero(&serveraddr, sizeof(serveraddr));
-    serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serveraddr.sin_family = AF_INET;
-    serveraddr.sin_port = htons(COMMON_PORT);
+    signal(SIGCHLD, child_ctl);
+    int listenfd = socket_bind("0.0.0.0",COMMON_PORT);
 
-    if(bind(listenfd,(sockaddr*)&serveraddr, sizeof(serveraddr)) < 0){
-        TLog.Error("bind err");
+    int pollfd = epoll_create(POLLSIZE);
+
+    if(pollfd < 0){
+        TLog.Error("epoll_create error");
     }
 
-    if(listen(listenfd, 1) < 0){
-        TLog.Error("listen err");
+    epoll_event ev;
+    ev.events = EPOLLIN;
+    ev.data.fd = listenfd;
+    epoll_ctl(pollfd,EPOLL_CTL_ADD, listenfd, &ev);
+    epoll_event events[POLLSIZE];
+    int ret = 0;
+    while(ret = epoll_wait(pollfd, events, POLLSIZE, -1)){
+        for(int i = 0;i<ret;i++){
+            cout << "have" << endl;
+            epoll_event e = events[i];
+            if(e.data.fd == listenfd){
+                int ac = accept(listenfd, nullptr, nullptr);
+                char *buffer = "ni hao";
+                cout << "ac" << endl;
+                write(ac, buffer, sizeof(buffer));
+                close(ac);
+            }
+        }
     }
-
-    while(1){
-        connefd = accept(listenfd, nullptr, nullptr);
-        cout << "Connet Success" << endl;
-        time_t t = time(0);
-        cout << ctime(&t) << endl;
-        sprintf(buffer,"%.24s", ctime(&t));
-        write(connefd, buffer, sizeof(buffer));
-        close(connefd);
-    }
-
     return 0;
 }

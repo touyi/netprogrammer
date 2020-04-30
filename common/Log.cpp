@@ -3,10 +3,10 @@
 //
 
 #include "Log.h"
-#include "../lib/lib/unp.h"
 #include <iostream>
 #include<string>
 using namespace std;
 void Log::Error(string err) {
-    err_quit(err.c_str());
+    cout << err << endl;
+    exit(-1);
 }

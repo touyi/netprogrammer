@@ -1,21 +1,23 @@
 #include <iostream>
 #include<sys/socket.h>
-#include "../lib/lib/unp.h"
+//#include "../lib/lib/unp.h"
 #include "../common/CommonDef.h"
 
 
 int main(int argn, char* arg[]) {
+    argn = 2;
+    arg = new char*[2];
+    arg[1] = "127.0.0.1";
     sockaddr_in serverAddr;
     char buffer[MAX_BUFFER + 1];
     int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if(sock <= 0){
         TLog.Error("Socket create fail");
     }
-//    if(argn <= 1){
-//        TLog.Error("addr error");
-//    }
-    //char* addr = arg[1];
-    char* addr = "127.0.0.1";
+    if(argn <= 1){
+        TLog.Error("addr error");
+    }
+    char* addr = arg[1];
 
     bzero(buffer, sizeof(buffer));
     serverAddr.sin_addr.s_addr = inet_addr(addr);
@@ -28,13 +30,22 @@ int main(int argn, char* arg[]) {
         TLog.Error("connect error");
     }
     int n = 0;
-    while((n = read(sock, buffer, MAX_BUFFER)) > 0){
-        buffer[n] = 0;
+    string str;
+    while(cin >> str){
+        if(str == "exit"){
+            break;
+        }
+        int strlen = str.size();
+        int realLen = write(sock, str.c_str(), strlen);
+        if(strlen != realLen){
+            TLog.Error("Write Err");
+            break;
+        }
+        n = read(sock, buffer, MAX_BUFFER);
+        if(n<0){
+            TLog.Error("Read err");
+        }
         cout << buffer << endl;
-        cout << 1 << endl;
-    }
-    if(n < 0){
-        TLog.Error("Read err");
     }
     return 0;
 }
