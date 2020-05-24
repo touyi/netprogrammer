@@ -5,8 +5,6 @@
 #ifndef COLINPRJ_COMMONDEF_H
 #define COLINPRJ_COMMONDEF_H
 
-#endif //COLINPRJ_COMMONDEF_H
-
 #define COMMON_PORT 2020
 #define MAX_BUFFER 1024
 #include<sys/wait.h>
@@ -23,3 +21,6 @@ using std::endl;
 using std::cin;
 
 #define TLog Log::GetInstance()
+
+#endif //COLINPRJ_COMMONDEF_H
+

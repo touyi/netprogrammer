@@ -6,7 +6,14 @@
 #include <iostream>
 #include<string>
 using namespace std;
-void Log::Error(string err) {
-    cout << err << endl;
+
+void Log::Error(std::string err) {
+    std::cout << err << std::endl;
     exit(-1);
 }
+
+void LogMsgInner(int level, std::string msg, int seq) {
+    std::cout << "Level[" << "0" << "]:" << msg << std::endl;
+}
+
+

@@ -4,7 +4,9 @@
 
 #ifndef COLINPRJ_MEPOLL_H
 #define COLINPRJ_MEPOLL_H
+#ifdef  EPOLL
 #include "sys/epoll.h"
+#endif
 
 int socket_bind(char* address, int port);
 
